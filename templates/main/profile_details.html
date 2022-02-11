@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% block page_content %}
+    <div class="row justify-content-center">
+        <div class="d-flex">
+            <div class="d-inline p-2 w-50">
+                <img src="{{ info.picture }}"
+                     class="w-50 rounded mx-auto d-block" alt="description">
+            </div>
+            <div class="d-inline p-2 w-50">
+                <div class="d-flex flex-column">
+                    <h5><u>Name:</u>{{ info.first_name }} {{ info.last_name }}</h5>
+                    <!-- If Date of Birth -->
+                    {% if info.date_of_birth %}
+                        <h5><u>Birthdate:</u>{{ info.date_of_birth }}</h5>
+                    {% endif %}
+                    <!-- If Email -->
+                    {% if info.email %}
+                        <h5><u>Email:</u>{{ info.email }}</h5>
+                    {% endif %}
+                    <!-- If Gender is Chosen -->
+                    {% if info.gender %}
+                        <h5><u>Gender:</u>{{ info.gender }}</h5>
+                    {% endif %}
+                    <!-- If Description -->
+                    {% if info.description %}
+                        <h5><u>Description:</u>{{ info.description }}</h5>
+                    {% endif %}
+                </div>
+                <p class="mt-2">Total Images: {{ pets_photos_count }}</p>
+                <p class="mt-2">Total Likes: {{ pets_photos_likes }}</p>
+                <a href="#" class="btn btn-primary">Edit</a>
+                <a href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
