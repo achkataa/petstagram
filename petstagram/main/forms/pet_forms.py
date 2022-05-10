@@ -3,14 +3,24 @@ from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
 
-from petstagram.main.helpers import BootsTrapMixin, DisableFieldsMixin
-from petstagram.main.models import Pet, PetPhoto
+from petstagram.common.helpers import BootsTrapMixin, DisableFieldsMixin
+from petstagram.main.models import Pet
 
 
 class CreatePetForm(forms.ModelForm, BootsTrapMixin):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
         self._init_bootstrap_form_controls()
+
+    def save(self, commit=True):
+        pet = super().save(commit=False)
+
+        pet.user = self.user
+        if commit:
+            pet.save()
+
+        return pet
 
     class Meta:
         model = Pet
@@ -21,18 +31,9 @@ class CreatePetForm(forms.ModelForm, BootsTrapMixin):
         }
 
 class EditPetForm(forms.ModelForm, BootsTrapMixin):
-    MIN_DATE_OF_BIRTH = date(1920, 1, 1)
-    MAX_DATE_OF_BIRTH = date.today()
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._init_bootstrap_form_controls()
-
-    def clean_date_of_birth(self):
-        date_of_birth = self.cleaned_data['date_of_birth']
-        if date_of_birth < self.MIN_DATE_OF_BIRTH or date_of_birth > self.MIN_DATE_OF_BIRTH:
-            raise ValidationError(f'Date of birth must be between {self.MIN_DATE_OF_BIRTH} and {self.MAX_DATE_OF_BIRTH}')
-        return date_of_birth
-
 
     class Meta:
         model = Pet
@@ -40,12 +41,11 @@ class EditPetForm(forms.ModelForm, BootsTrapMixin):
 
 
 class DeletePetForm(forms.ModelForm, BootsTrapMixin, DisableFieldsMixin):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._init_bootstrap_form_controls()
-        self.fields['name'].required = False
-        self.fields['type'].required = False
-        self._init_disable_fields()
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self._init_bootstrap_form_controls()
+    #
+    #     self._init_disable_fields()
 
     def save(self, commit=True):
         # photos = PetPhoto.objects.filter(tagged_pet=self.instance)
@@ -55,7 +55,7 @@ class DeletePetForm(forms.ModelForm, BootsTrapMixin, DisableFieldsMixin):
 
     class Meta:
         model = Pet
-        fields = ('name', 'type', 'date_of_birth')
+        fields = ()
 
 
 

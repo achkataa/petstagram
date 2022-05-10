@@ -1,22 +1,29 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, TemplateView
 
-from petstagram.main.helpers import get_profile
 from petstagram.main.models import PetPhoto
 
 
-def home_page_view(request):
-    context = {
-        'hide_adititonal_nav_items': True
-    }
-    return render(request, 'main/home_page.html', context)
+class HomePageView(TemplateView):
+    template_name = 'main/home_page.html'
 
-def dashboard_view(request):
-    profile = get_profile()
-    pets_photos = PetPhoto.objects.filter(tagged_pets__user_profile=profile)
-    context = {
-        'pets_photos': pets_photos
-    }
-    return render(request, 'main/dashboard.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hide_adititonal_nav_items'] = True
+        return context
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+
+        return super().dispatch(request, *args, **kwargs)
+
+class DashboardView(ListView):
+    model = PetPhoto
+    template_name = 'main/dashboard.html'
+    context_object_name = 'pets_photos'
+
+
 
 def handle_404(request):
     return render(request, 'main/401_error.html')
