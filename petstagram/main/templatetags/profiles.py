@@ -1,9 +1,9 @@
 from django import template
 
-from petstagram.main.models import Profile
+from petstagram.accounts.models import PetstagramUser
 
 register = template.Library()
 
 @register.simple_tag()
 def has_profile():
-    return Profile.objects.count() > 0
+    return PetstagramUser.objects.count() > 0
