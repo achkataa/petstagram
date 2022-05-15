@@ -63,7 +63,7 @@ class ChangePasswordView():
 
 class ProfileView(DetailView):
     model = Profile
-    template_name = 'main/../../templates/accounts/profile_details.html'
+    template_name = 'accounts/profile_details.html'
     context_object_name = 'info'
 
     def get_context_data(self, **kwargs):

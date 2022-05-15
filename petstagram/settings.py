@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)bbc_(bw&(gb7++5!%ur+)ziaof__&yh7%b$*xt5s9(xefr1vv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(", ")
 
 
 # Application definition
@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'petstagram.common.middleware.app_clicks',
+    'petstagram.common.middleware.last_viewed_photos',
 ]
 
 ROOT_URLCONF = 'petstagram.urls'
